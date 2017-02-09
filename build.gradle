@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.6'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
+    compile 'com.thetransactioncompany:jsonrpc2-client:1.16.4'
+    compile 'org.projectlombok:lombok:1.16.12'
+    compile 'com.google.guava:guava:20.0'
+    compile 'joda-time:joda-time:2.9.7'
+
+    testCompile 'com.github.tomakehurst:wiremock:2.5.1'
+    testCompile 'junit:junit:4.12'
+}
+
