@@ -29,6 +29,8 @@ public class RandomClientImpl {
     private final JSONRPC2Session session;
     private int requestId = 0;
 
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JodaModule());
+
     public static class Builder {
         private String url = "https://api.random.org/json-rpc/1/invoke";
         private String apiKey = "00000000-0000-0000-0000-000000000000";
@@ -45,28 +47,43 @@ public class RandomClientImpl {
         }
     }
 
-    public Response<Integer> generateIntegers(int n, int min, int max, Boolean replacement, Integer base) throws JSONRPC2SessionException, JSONRPC2Error, IOException {
-        ImmutableMap.Builder<String, Object> builder = ImmutableMap.<String, Object>builder()
-                .put("apiKey", this.apiKey)
-                .put("n", n)
-                .put("min", min)
-                .put("max", max);
+    public Response<Integer> generateIntegers(int n, int min, int max)
+            throws JSONRPC2SessionException, JSONRPC2Error, IOException { return generateIntegers(n, min, max, true, 10); }
 
-        if(replacement != null) builder.put("replacement", replacement);
-        if(base != null) builder.put("base", base);
+    public Response<Integer> generateIntegers(int n, int min, int max, Boolean replacement, Integer base)
+            throws JSONRPC2SessionException, JSONRPC2Error, IOException {
 
-        JSONRPC2Request request = new JSONRPC2Request("generate", builder.build(), requestId);
-        JSONRPC2Response response = this.session.send(request);
+        JSONRPC2RequestBuilder requestBuilder =
+                JSONRPC2RequestBuilder.of("n", n, "min", min, "max", max, "replacement", replacement, "base", base);
+
+        return makeRequestAndConvert(requestBuilder, "generateIntegers", new TypeReference<ResponseImpl<Integer>>() {});
+    }
+
+    public Response<String> generateIntegersWithBaseHigherThanTen(int n, int min, int max, Boolean replacement, Integer base)
+            throws JSONRPC2SessionException, JSONRPC2Error, IOException {
+
+        JSONRPC2RequestBuilder requestBuilder =
+                JSONRPC2RequestBuilder.of("n", n, "min", min, "max", max, "replacement", replacement, "base", base);
+
+        return makeRequestAndConvert(requestBuilder, "generateIntegers", new TypeReference<ResponseImpl<String>>() {});
+    }
+
+    public <T> T makeRequestAndConvert(JSONRPC2RequestBuilder requestBuilder, String methodName, TypeReference<T> type)
+            throws JSONRPC2SessionException, JSONRPC2Error, IOException {
+
+        requestId++;
+
+        //extend with apiKey for auth
+        requestBuilder.put("apiKey", apiKey);
+
+        JSONRPC2Response response = this.session.send(requestBuilder.build(methodName, requestId));
 
         if(!response.indicatesSuccess()) throw response.getError();
 
-        String result = response.getResult().toString();
-        return mapJsonToObject(result, new TypeReference<ResponseImpl<Integer>>() {});
+        return mapJsonToObject(response.getResult().toString(), type);
     }
 
     private <T> T mapJsonToObject(String json, TypeReference<T> type) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
         return mapper.readValue(json, type);
     }
  }

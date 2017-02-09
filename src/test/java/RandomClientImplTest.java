@@ -34,7 +34,7 @@ public class RandomClientImplTest {
                 .willReturn(aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json; charset=utf-8")
-                    .withBody("{\"jsonrpc\":\"2.0\",\"result\":{\"random\":{\"data\":[3,8,4,5,6,2,2,5,9,7],\"completionTime\":\"2017-02-09 11:26:13Z\"},\"bitsUsed\":33,\"bitsLeft\":999934,\"requestsLeft\":199998,\"advisoryDelay\":210},\"id\":0}")));
+                    .withBody("{\"jsonrpc\":\"2.0\",\"result\":{\"random\":{\"data\":[3,8,4,5,6,2,2,5,9,7],\"completionTime\":\"2017-02-09 11:26:13Z\"},\"bitsUsed\":33,\"bitsLeft\":999934,\"requestsLeft\":199998,\"advisoryDelay\":210},\"id\":1}")));
 
         Response<Integer> response = instance.generateIntegers(5, 0, 10, true, 10);
 
