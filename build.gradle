@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 repositories {
     jcenter()
@@ -14,6 +15,7 @@ dependencies {
     compile 'joda-time:joda-time:2.9.7'
 
     testCompile 'com.github.tomakehurst:wiremock:2.5.1'
+    testCompile 'org.assertj:assertj-joda-time:2.0.0'
     testCompile 'junit:junit:4.12'
 }
 

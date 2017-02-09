@@ -2,6 +2,10 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import lombok.Getter;
+import org.assertj.jodatime.api.DateTimeAssert;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,6 +18,7 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.*;
+import static org.assertj.jodatime.api.Assertions.assertThat;
 
 /**
  * @author dani
@@ -25,6 +30,7 @@ public class RandomClientImplTest {
     public WireMockRule wireMockRule = new WireMockRule(PORT);
     public RandomClientImpl.Builder builder = null;
     public RandomClientImpl instance = null;
+    public final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ssZZ");
 
     @Before
     public void instantiate() throws MalformedURLException {
@@ -43,9 +49,13 @@ public class RandomClientImplTest {
 
     @Test
     public void testGenerateResponseReturnsCorrectly() throws IOException, JSONRPC2Error, JSONRPC2SessionException {
-        List<Integer> replyData = stubDummyResponse();
+        DateTime completionTime = DateTime.parse("2017-02-09 11:26:13Z", formatter);
+        List<Integer> replyData = stubDummyResponse(completionTime);
+
         Response<Integer> response = instance.generateIntegers(5, 0, 10000);
+
         assertEquals(replyData, response.getRandom().getData());
+        assertThat(completionTime).isEqualTo(response.getRandom().getCompletionTime());
     }
 
     @Test
@@ -53,7 +63,6 @@ public class RandomClientImplTest {
         final String apiKey = "00000000-3133-7331-1337-000000000000";
         instance = builder.apiKey(apiKey).build();
         builder = null; //in order to be recreated next round
-
         stubDummyResponse();
 
         instance.generateIntegers(5, 0, 10000);
@@ -62,7 +71,12 @@ public class RandomClientImplTest {
                 .withRequestBody(matching(".*\"apiKey\":\"" + apiKey + "\".*")));
     }
 
+    //Helpers
     public List<Integer> stubDummyResponse() {
+        return stubDummyResponse(DateTime.now());
+    }
+
+    public List<Integer> stubDummyResponse(DateTime completionTime) {
         List<Integer> replyData = new ArrayList();
         for(int i = 0; i < 10; i++) replyData.add(i);
 
@@ -75,7 +89,7 @@ public class RandomClientImplTest {
                                         "\"result\": {" +
                                             "\"random\": {" +
                                                 "\"data\":" + replyData.toString() + "," +
-                                                "\"completionTime\":\"2017-02-09 11:26:13Z\"" +
+                                                "\"completionTime\":\"" + completionTime.toString(formatter) + "\"" +
                                             "}," +
                                             "\"bitsUsed\":33," +
                                             "\"bitsLeft\":999934," +
