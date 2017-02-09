@@ -13,4 +13,5 @@ public interface Response<T> {
     int getBitsLeft();
     int getRequestsLeft();
     int getAdvisoryDelay();
+    Result<T> getRandom();
 }
