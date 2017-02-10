@@ -1,15 +1,12 @@
 package response;
 
-import lombok.Getter;
 import org.joda.time.DateTime;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
  * @author dani
+ * @param <T> The type of variables in the result list ("result.random.data" in json).
  */
 public interface Result<T> {
     List<T> getData();

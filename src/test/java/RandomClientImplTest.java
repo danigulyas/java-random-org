@@ -1,8 +1,4 @@
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
-import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
-import lombok.Getter;
-import org.assertj.jodatime.api.DateTimeAssert;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -11,14 +7,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import response.Response;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.*;
 import static org.assertj.jodatime.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author dani
@@ -34,21 +29,23 @@ public class RandomClientImplTest {
 
     @Before
     public void instantiate() throws MalformedURLException {
-        if(builder == null)
-            builder = new RandomClientImpl.Builder().url(String.format("http://localhost:%d/json-rpc/1/invoke", PORT));
+        if (builder == null) {
+            builder = new RandomClientImpl.Builder()
+                        .url(String.format("http://localhost:%d/json-rpc/1/invoke", PORT));
+        }
 
         this.instance = builder.build();
     }
 
     @Test
-    public void testGenerateResponsePosts() throws IOException, JSONRPC2Error, JSONRPC2SessionException {
+    public void testGenerateResponsePosts() throws Exception {
         List<Integer> replyData = stubDummyResponse();
         Response<Integer> response = instance.generateIntegers(5, 0, 10);
         verify(postRequestedFor(urlEqualTo("/json-rpc/1/invoke")));
     }
 
     @Test
-    public void testGenerateResponseReturnsCorrectly() throws IOException, JSONRPC2Error, JSONRPC2SessionException {
+    public void testGenerateResponseReturnsCorrectly() throws Exception {
         DateTime completionTime = DateTime.parse("2017-02-09 11:26:13Z", formatter);
         List<Integer> replyData = stubDummyResponse(completionTime);
 
@@ -59,7 +56,7 @@ public class RandomClientImplTest {
     }
 
     @Test
-    public void testSetApiKey() throws IOException, JSONRPC2Error, JSONRPC2SessionException {
+    public void testSetApiKey() throws Exception {
         final String apiKey = "00000000-3133-7331-1337-000000000000";
         instance = builder.apiKey(apiKey).build();
         builder = null; //in order to be recreated next round
@@ -78,7 +75,10 @@ public class RandomClientImplTest {
 
     public List<Integer> stubDummyResponse(DateTime completionTime) {
         List<Integer> replyData = new ArrayList();
-        for(int i = 0; i < 10; i++) replyData.add(i);
+
+        for (int i = 0; i < 10; i++) {
+            replyData.add(i);
+        }
 
         stubFor(post(urlEqualTo("/json-rpc/1/invoke"))
                 .willReturn(aResponse()

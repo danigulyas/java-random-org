@@ -1,12 +1,8 @@
 package response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
-import java.util.List;
-
 /**
  * @author dani
+ * @param <T> The type of variables in "result.random.data".
  */
 public interface Response<T> {
     int getBitsUsed();
