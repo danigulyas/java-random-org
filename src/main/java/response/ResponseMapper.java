@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import response.mapper.Result;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * @author dani
  */
@@ -16,11 +18,12 @@ public class ResponseMapper {
         this.mapper = new ObjectMapper().registerModule(new JodaModule());
     }
 
-    public <T> Response<T> mapResponse(JSONRPC2Response response, TypeReference<Result<T>> type) {
-        //TODO(dani): MIGHT BE FISHY, double check on it!
+    public <T> Response<T> mapResponse(JSONRPC2Response response, TypeReference type) {
+        checkNotNull(response);
+        checkNotNull(type);
+
         if(isSuccessfulResponse(response)) {
-            //TODO(dani): see if there's easier ways
-            return new Response((Result<T>) mapper.convertValue(response.getResult(), new TypeReference<Result<T>>() {}));
+            return new Response((T) mapper.convertValue(response.getResult(), type));
         } else {
             return new Response(new ResponseError(response));
         }

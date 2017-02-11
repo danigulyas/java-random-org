@@ -11,15 +11,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class Response<T> {
     @Getter private final ResponseError error;
-    @Getter private final Result<T> result;
+    @Getter private final T result;
 
-    public Response(ResponseError error) {
+    public <T extends ResponseError> Response(T error) {
         checkNotNull(error);
         this.result = null;
         this.error = error;
     }
 
-    public Response(Result<T> result) {
+    public Response(T result) {
         checkNotNull(result);
         this.result = result;
         this.error = null;

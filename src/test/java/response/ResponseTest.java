@@ -1,6 +1,5 @@
 package response;
 
-import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import org.junit.Test;
 import response.mapper.Result;
 

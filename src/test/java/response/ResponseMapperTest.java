@@ -3,7 +3,6 @@ package response;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
-import org.assertj.jodatime.api.DateTimeAssert;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
@@ -17,11 +16,8 @@ import response.mapper.Result;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
+import static junit.framework.TestCase.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertArrayEquals;
 import static response.ResponseMapper.isSuccessfulResponse;
 
 /**
@@ -63,7 +59,7 @@ public class ResponseMapperTest extends ResponseBaseTest {
     public void mapResponseWorksCorrectlyWithSuccessfulResponse() {
         JSONRPC2Response rpcResponse = getRpcResponseMock(EXAMPLE_PARSED_RESULT, REQUEST_ID);
 
-        Response<Integer> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
+        Response<Result<Integer>> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
         Result<Integer> result = response.getResult();
 
         assertTrue(response.isSuccessful());
@@ -73,7 +69,7 @@ public class ResponseMapperTest extends ResponseBaseTest {
     public void mapResponseMapsMetadataCorrectly() {
         JSONRPC2Response rpcResponse = getRpcResponseMock(EXAMPLE_PARSED_RESULT, REQUEST_ID);
 
-        Response<Integer> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
+        Response<Result<Integer>> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
         Result<Integer> result = response.getResult();
 
         assertTrue(response.isSuccessful());
@@ -88,7 +84,7 @@ public class ResponseMapperTest extends ResponseBaseTest {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ssZZ");
         JSONRPC2Response rpcResponse = getRpcResponseMock(EXAMPLE_PARSED_RESULT, REQUEST_ID);
 
-        Response<Integer> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
+        Response<Result<Integer>> response = mapper.mapResponse(rpcResponse, new TypeReference<Result<Integer>>() {});
         Random<Integer> random = response.getResult().getRandom();
 
         Map<String, Object> randomInExampleResult = (Map<String, Object>) EXAMPLE_PARSED_RESULT.get("random");
