@@ -1,3 +1,5 @@
+package request;
+
 import com.google.common.collect.ImmutableMap;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 
@@ -7,24 +9,27 @@ import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Class to create JSONRPC2 Requests.
+ *
+ * TODO(dani): type safety! make sure K is String somehow without cluttering the .of's unnecessarily
+ *
  * @author dani
  * @param <K> Type of the Key in the map of parameters.
  * @param <V> Type of the Value in the map of parameters.
  */
-public class JSONRPC2RequestBuilder<K, V> {
+public class RequestBuilder<K, V> {
     private ImmutableMap.Builder<K, V> mapBuilder;
     private String methodName;
 
-    public JSONRPC2RequestBuilder() {
+    public RequestBuilder() {
         mapBuilder = new ImmutableMap.Builder();
     }
 
-    public JSONRPC2RequestBuilder put(K key, V value) {
+    public RequestBuilder put(K key, V value) {
         mapBuilder.put(key, value);
         return this;
     }
 
-    public JSONRPC2RequestBuilder setMethodName(String name) {
+    public RequestBuilder setMethodName(String name) {
         this.methodName = name;
         return this;
     }
@@ -39,31 +44,31 @@ public class JSONRPC2RequestBuilder<K, V> {
 
     /**
      * Example: JSONRPC2Request =
-     *  JSONRPC2RequestBuilder.of("apiKey", apikey, "n", n).setMethodName("methodName")build(requestId);
+     *  request.RequestBuilder.of("apiKey", apikey, "n", n).setMethodName("methodName")build(requestId);
      * This is needed in order to have some literal-ish construction,
      * but yet still remain able to use the builder of the ImmutableMap.
      */
-    public static <K, V> JSONRPC2RequestBuilder<K, V> of(K k1, V v1) {
-        return new JSONRPC2RequestBuilder().put(k1, v1);
+    public static <K, V> RequestBuilder<K, V> of(K k1, V v1) {
+        return new RequestBuilder().put(k1, v1);
     }
 
-    public static <K, V> JSONRPC2RequestBuilder<K, V> of(K k1, V v1, K k2, V v2) {
-        return new JSONRPC2RequestBuilder().put(k1, v1).put(k2, v2);
+    public static <K, V> RequestBuilder<K, V> of(K k1, V v1, K k2, V v2) {
+        return new RequestBuilder().put(k1, v1).put(k2, v2);
     }
 
-    public static <K, V> JSONRPC2RequestBuilder<K, V> of(
+    public static <K, V> RequestBuilder<K, V> of(
             K k1, V v1, K k2, V v2, K k3, V v3) {
-        return new JSONRPC2RequestBuilder().put(k1, v1).put(k2, v2).put(k3, v3);
+        return new RequestBuilder().put(k1, v1).put(k2, v2).put(k3, v3);
     }
 
-    public static <K, V> JSONRPC2RequestBuilder<K, V> of(
+    public static <K, V> RequestBuilder<K, V> of(
             K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-        return new JSONRPC2RequestBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4);
+        return new RequestBuilder().put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4);
     }
 
-    public static <K, V> JSONRPC2RequestBuilder<K, V> of(
+    public static <K, V> RequestBuilder<K, V> of(
             K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-        return new JSONRPC2RequestBuilder()
+        return new RequestBuilder()
                 .put(k1, v1).put(k2, v2).put(k3, v3).put(k4, v4).put(k5, v5);
     }
 

@@ -1,4 +1,4 @@
-package response;
+package response.mapper;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import java.util.List;
  * @author dani
  */
 @AllArgsConstructor
-public class ResultImpl<T> implements Result<T> {
+public class Random<T> {
     @Getter
     @JsonProperty
     private List<T> data;

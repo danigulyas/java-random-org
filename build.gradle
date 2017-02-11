@@ -21,6 +21,7 @@ dependencies {
 
     testCompile 'com.github.tomakehurst:wiremock:2.5.1'
     testCompile 'org.assertj:assertj-joda-time:2.0.0'
+    testCompile "org.mockito:mockito-core:2.+"
     testCompile 'junit:junit:4.12'
 }
 

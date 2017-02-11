@@ -7,8 +7,8 @@ import com.thetransactioncompany.jsonrpc2.client.JSONRPC2Session;
 import com.thetransactioncompany.jsonrpc2.client.JSONRPC2SessionException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import response.Response;
-import response.ResponseImpl;
+import request.RequestBuilder;
+import response.mapper.Result;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -62,32 +62,32 @@ public class RandomClientImpl {
         }
     }
 
-    public Response<Integer> generateIntegers(int n, int min, int max) throws Exception {
+    public Result<Integer> generateIntegers(int n, int min, int max) throws Exception {
         return generateIntegers(n, min, max, true, 10);
     }
 
-    public Response<Integer> generateIntegers(
+    public Result<Integer> generateIntegers(
             int n, int min, int max, Boolean replacement, Integer base) throws Exception {
 
-        JSONRPC2RequestBuilder requestBuilder = JSONRPC2RequestBuilder
+        RequestBuilder requestBuilder = RequestBuilder
                 .of("n", n, "min", min, "max", max, "replacement", replacement, "base", base)
                 .setMethodName("generateIntegers");
 
-        return makeRequestAndConvert(requestBuilder, new TypeReference<ResponseImpl<Integer>>() {});
+        return makeRequestAndConvert(requestBuilder, new TypeReference<Result<Integer>>() {});
     }
 
-    public Response<String> generateIntegersWithBaseHigherThanTen(
+    public Result<String> generateIntegersWithBaseHigherThanTen(
             int n, int min, int max, Boolean replacement, Integer base) throws Exception {
 
-        JSONRPC2RequestBuilder requestBuilder = JSONRPC2RequestBuilder
+        RequestBuilder requestBuilder = RequestBuilder
                 .of("n", n, "min", min, "max", max, "replacement", replacement, "base", base)
                 .setMethodName("generateIntegers");
 
-        return makeRequestAndConvert(requestBuilder, new TypeReference<ResponseImpl<String>>() {});
+        return makeRequestAndConvert(requestBuilder, new TypeReference<Result<String>>() {});
     }
 
     public <T> T makeRequestAndConvert(
-            JSONRPC2RequestBuilder requestBuilder, TypeReference<T> type)
+            RequestBuilder requestBuilder, TypeReference<T> type)
             throws Exception {
 
         //extend with apiKey for auth
@@ -102,9 +102,6 @@ public class RandomClientImpl {
             throw new Exception("Error during the request.", e);
         } catch (JSONRPC2Error e) {
             throw new Exception("Error during the processing of the request.", e);
-        } catch (IOException e) {
-            throw e;
-            //TODO(dani): translate exception to this context
         }
     }
 
