@@ -9,7 +9,7 @@ String myApiKey;
 RandomApiContext context = new RandomApiContext(myApiKey);
 Response<Result<String>> response = RandomApiClient.generateStrings(context, 10, 5);
 
-if (response.isSuccessful()) {
+if (!response.isSuccessful()) {
     // check response.getError().getData() to find additional data coming from the server
     // check response.getError().getCode() to find the code, or .getMessage() for the message
 }

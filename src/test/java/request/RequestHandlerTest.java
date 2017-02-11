@@ -54,7 +54,7 @@ public class RequestHandlerTest {
 
         try {
             handler.makeRequest(getValidBuilder());
-        } catch(RequestException e) {
+        } catch (RequestException e) {
             assertEquals(sessionException, e.getCause());
         }
     }
